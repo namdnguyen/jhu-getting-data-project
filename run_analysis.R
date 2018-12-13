@@ -16,6 +16,8 @@
 library(tidyverse)
 
 setwd("./")
+
+fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 file <- "data/har.zip"
 data <- "data/UCI HAR Dataset"
 
@@ -26,7 +28,6 @@ if(!file.exists("data")) {
 
 # Retrieve data file
 if(!file.exists(data)) {
-  fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
   download.file(fileUrl, destfile = file, method = "curl")
   unzip(file, exdir = "data")
   file.remove(file)
