@@ -2,7 +2,7 @@
 
 This repository contains files for the John Hopkins "Getting and Cleaning Data" Coursera course project.
 
-- `codeBook.MD`: code book with details on the data
+- `CodeBook.MD`: code book with details on the data
 - `run_analysis.R`: the analysis R script
 - `output/activity_subject_mean.txt`: generated tidy dataset produced by `run_analysis.R`
 
