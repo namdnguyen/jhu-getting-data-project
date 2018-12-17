@@ -55,8 +55,11 @@ yTrain <- read_table(file.path(train, "y_train.txt"), col_names = FALSE)
 activity <- bind_rows(yTest, yTrain) %>%
   setNames("activity")
 
-# 2. Extract mean and standard deviation for each measurement
-features <- read_delim(file.path(data, "features.txt"), delim = " ", col_names = FALSE)
+# 2. Extract mean and standard deviation for each measurement AND
+# 4. Use descriptive variable names
+features <- read_delim(file.path(data, "features.txt"),
+                       delim = " ",
+                       col_names = FALSE)
 
 xMeanStd <- x %>%
   setNames(make.names(features$X2, unique = TRUE)) %>%
@@ -68,12 +71,16 @@ xMeanStd <- x %>%
   setNames(gsub("^t", "time", names(.))) %>%
   setNames(gsub("^f", "frequency", names(.)))
 
-# 3. & 4. Use descriptive activity labels and descriptive variable names
-activityLabels <- read_delim(file.path(data, "activity_labels.txt"), delim = " ", col_names = FALSE)
-activity <- activity %>% mutate(activity = factor(activity, labels = activityLabels$X2)) %>%
+# 3. Use descriptive activity labels
+activityLabels <- read_delim(file.path(data, "activity_labels.txt"),
+                             delim = " ",
+                             col_names = FALSE)
+
+activity <- activity %>%
+  mutate(activity = factor(activity, labels = activityLabels$X2)) %>%
   select(activity)
 
-
+# Merge data sets
 all <- bind_cols(subject, activity, xMeanStd)
 
 # 5. Create and Write secondary tidy data set
@@ -81,6 +88,7 @@ tidy <- all %>%
   group_by(activity, subject) %>%
   summarize_all(funs(mean))
 
+# Write tidy data set to delimited file
 if(!file.exists("output")) {
   dir.create("output")
 }
