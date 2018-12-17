@@ -18,3 +18,14 @@ The code book contains information on the variables used in the project, additio
 The `run_analysis.R` script contains the R code that is used to download the data sets. The script then merges, cleans, transforms, and summarizes the data sets.
 
 The script also generates a secondary, independent data set that contains the averages for each of the variables by activity for each subject. The generated data set is saved to the `output` directory and stored in the same space-delimited txt file as the original data sets.
+
+The steps of the analysis script are listed below:
+
+1. Download data sets
+2. Merge testing and training data sets
+3. Extract the measurements of the mean and standard deviation for each measurement
+4. Clean variable names and make them more descriptive
+5. Convert activity values to factors with descriptive names
+6. Merge all columns into a single data frame
+7. Calculate the mean of each measurement, grouped by activity and subject
+8. Save calculated data set to `output`
