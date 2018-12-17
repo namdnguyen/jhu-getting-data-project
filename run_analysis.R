@@ -92,4 +92,4 @@ tidy <- all %>%
 if(!file.exists("output")) {
   dir.create("output")
 }
-write_delim(tidy, file.path("output", "activity_subject_mean.txt"), delim = " ")
+write.table(tidy, file.path("output", "activity_subject_mean.txt"), row.names = FALSE)
