@@ -1,4 +1,5 @@
 ## Getting and Cleaning Data Course Project
+
 ## https://www.coursera.org/learn/data-cleaning/peer/FIZtT/getting-and-cleaning-data-course-project
 
 ## 1 Merges the training and the test sets to create one data set.
@@ -35,3 +36,52 @@ if(!file.exists(data)) {
   dateDownloaded <- date()
   dateDownloaded
 }
+
+# 1. Merge test and train datasets
+test <- file.path(data, "test")
+train <- file.path(data, "train")
+
+subjectTest <- read_table(file.path(test, "subject_test.txt"), col_names = FALSE)
+subjectTrain <- read_table(file.path(train, "subject_train.txt"), col_names = FALSE)
+subject <- bind_rows(subjectTest, subjectTrain) %>%
+  setNames("subject")
+
+XTest <- read_table(file.path(test, "X_test.txt"), col_names = FALSE)
+XTrain <- read_table(file.path(train, "X_train.txt"), col_names = FALSE)
+x <- bind_rows(XTest, XTrain)
+
+yTest <- read_table(file.path(test, "y_test.txt"), col_names = FALSE)
+yTrain <- read_table(file.path(train, "y_train.txt"), col_names = FALSE)
+activity <- bind_rows(yTest, yTrain) %>%
+  setNames("activity")
+
+# 2. Extract mean and standard deviation for each measurement
+features <- read_delim(file.path(data, "features.txt"), delim = " ", col_names = FALSE)
+
+xMeanStd <- x %>%
+  setNames(make.names(features$X2, unique = TRUE)) %>%
+  setNames(gsub("\\.{2,}", "\\.", names(.))) %>%
+  select(matches("mean\\.|std\\.")) %>%
+  setNames(gsub("mean", "Mean", names(.))) %>%
+  setNames(gsub("std", "Std", names(.))) %>%
+  setNames(gsub("\\.", "", names(.))) %>%
+  setNames(gsub("^t", "time", names(.))) %>%
+  setNames(gsub("^f", "frequency", names(.)))
+
+# 3. & 4. Use descriptive activity labels and descriptive variable names
+activityLabels <- read_delim(file.path(data, "activity_labels.txt"), delim = " ", col_names = FALSE)
+activity <- activity %>% mutate(activity = factor(activity, labels = activityLabels$X2)) %>%
+  select(activity)
+
+
+all <- bind_cols(subject, activity, xMeanStd)
+
+# 5. Create and Write secondary tidy data set
+tidy <- all %>%
+  group_by(activity, subject) %>%
+  summarize_all(funs(mean))
+
+if(!file.exists("output")) {
+  dir.create("output")
+}
+write_delim(tidy, file.path("output", "activity_subject_mean.txt"), delim = " ")
